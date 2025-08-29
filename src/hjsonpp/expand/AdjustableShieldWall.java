@@ -15,7 +15,7 @@ import mindustry.world.blocks.defense.Wall;
 import mindustry.world.meta.Stat;
 
 public class AdjustableShieldWall extends Wall{
-    // radius of shield. 1 = default shield wall radiuss
+    // radius of shield. 1 = default shield wall radius
     public float radius = 2f;
     // shield health
     public float shieldHealth = 400.0F;
@@ -89,7 +89,6 @@ public class AdjustableShieldWall extends Wall{
                     this.hit -= Time.delta / 10.0F;
                     this.hit = Math.max(this.hit, 0.0F);
                 }
-
                 this.shieldRadius = Mathf.lerpDelta(this.shieldRadius, this.broken() ? 0.0F : 1.0F, 0.12F);
             }
         }

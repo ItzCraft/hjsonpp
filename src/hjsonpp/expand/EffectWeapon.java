@@ -1,6 +1,6 @@
 package hjsonpp.expand;
 
-import arc.struct.Seq;
+
 import arc.util.Time;
 import mindustry.entities.Effect;
 import mindustry.entities.units.WeaponMount;
@@ -9,7 +9,7 @@ import mindustry.type.Weapon;
 
 public class EffectWeapon extends Weapon {
     // the list of effects
-    private Seq<Effect> effects = new Seq<>();
+    public Effect[] effects = new Effect[]{};
     // interval between showup of effects
     public float effectInterval = 60;
     // X of displayed effects
@@ -22,12 +22,6 @@ public class EffectWeapon extends Weapon {
 
     public EffectWeapon(String name){
         super(name);
-    }
-
-    public void addEffects(Effect...effect){
-        for(Effect eff : effect){
-            effects.add(eff);
-        }
     }
 
     @Override
