@@ -10,7 +10,7 @@ public class HjsonPlusPlusMod extends Mod{
         ClassMap.classes.put("TileGenerator", hjsonpp.expand.TileGenerator.class);
         ClassMap.classes.put("AdvancedCoreBlock", hjsonpp.expand.AdvancedCoreBlock.class);
         ClassMap.classes.put("GeneratorCoreBlock", hjsonpp.expand.GeneratorCoreBlock.class);
-        ClassMap.classes.put("ColliderCrafter", hjsonpp.expand.ColiderCrafter.class);
+        ClassMap.classes.put("ColiderCrafter", hjsonpp.expand.ColiderCrafter.class);
         ClassMap.classes.put("AccelTurret", hjsonpp.expand.AccelTurret.class);
         ClassMap.classes.put("OverHeatTurret", hjsonpp.expand.OverHeatTurret.class);
         ClassMap.classes.put("HealingWall", hjsonpp.expand.HealingWall.class);
