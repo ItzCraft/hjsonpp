@@ -1,4 +1,7 @@
 type: ExplosionWall
+size: 5
+health: 50
 hitsExp: 1
 expSize: 600
 expDmg: 1000000
+category: defence

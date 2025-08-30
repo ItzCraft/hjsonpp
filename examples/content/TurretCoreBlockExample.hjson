@@ -1,5 +1,8 @@
 type: TurretCoreBlock
+size: 3
+health: 500
 partsCore: none
 partsTurret: none
 ammoType: copper
 ammoShoot: 1
+category: effect

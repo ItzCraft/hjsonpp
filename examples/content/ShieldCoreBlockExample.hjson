@@ -1,4 +1,7 @@
 type: ShieldCoreBlock
+health: 500
+size: 1
 shdSize: 75
 shdHealth: 500
 shdRegen: 5
+category: effect
