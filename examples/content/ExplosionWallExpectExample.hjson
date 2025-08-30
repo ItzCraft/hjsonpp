@@ -1,0 +1,4 @@
+type: ExplosionWall
+hitsExp: 5
+expSize: 25
+expDmg: 10
