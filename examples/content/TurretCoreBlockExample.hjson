@@ -1,0 +1,5 @@
+type: TurretCoreBlock
+partsCore: none
+partsTurret: none
+ammoType: copper
+ammoShoot: 1
