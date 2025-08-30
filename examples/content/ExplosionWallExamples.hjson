@@ -1,0 +1,20 @@
+//expected
+type: ExplosionWall
+size: 1
+health: 240
+hitsExp: 10
+expSize: 25
+expDmg: 50
+expSound: explosion
+expEffect: explosionLarge
+category: defence
+//nuke
+type: ExplosionWall
+size: 5
+health: 50
+hitsExp: 1
+expSize: 600
+expDmg: 1000000
+expSound: largeExplosion
+expEffect: explosionLarge
+category: effect
