@@ -1,0 +1,4 @@
+type: ShieldCoreBlock
+shdSize: 75
+shdHealth: 500
+shdRegen: 5
