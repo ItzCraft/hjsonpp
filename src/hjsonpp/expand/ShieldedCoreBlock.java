@@ -90,7 +90,7 @@ public class ShieldedCoreBlock extends AdvancedCoreBlock {
     protected static ShieldedCoreBlockBuild paramEntity;
     protected static Effect paramEffect;
     protected static final Cons<Bullet> shieldConsumer = bullet -> {
-        if(bullet.team != paramEntity.team && bullet.type.absorbable && !bullet.absorbed && Intersector.isInRegularPolygon(((ForceProjector)(paramEntity.block)).sides, paramEntity.x, paramEntity.y, paramEntity.realRadius(), ((ForceProjector)(paramEntity.block)).shieldRotation, bullet.x, bullet.y)){
+        if(bullet.team != paramEntity.team && bullet.type.absorbable && !bullet.absorbed && Intersector.isInRegularPolygon(((ShieldedCoreBlock)(paramEntity.block)).sides, paramEntity.x, paramEntity.y, paramEntity.realRadius(), ((ShieldedCoreBlock)(paramEntity.block)).shieldRotation, bullet.x, bullet.y)){
             bullet.absorb();
             paramEffect.at(bullet);
             paramEntity.hit = 1f;
@@ -107,7 +107,7 @@ public class ShieldedCoreBlock extends AdvancedCoreBlock {
     @Override
     public void setBars(){
         super.setBars();
-        addBar("shield", (ForceProjector.ForceBuild entity) -> new Bar("stat.shieldhealth", Pal.accent, () -> entity.broken ? 0f : 1f - entity.buildup / (shieldHealth + phaseShieldBoost * entity.phaseHeat)).blink(Color.white));
+        addBar("shield", (ShieldedCoreBlockBuild entity) -> new Bar("stat.shieldhealth", Pal.accent, () -> entity.broken ? 0f : 1f - entity.buildup / (shieldHealth + phaseShieldBoost * entity.phaseHeat)).blink(Color.white));
     }
 
     @Override
@@ -296,7 +296,7 @@ public class ShieldedCoreBlock extends AdvancedCoreBlock {
         }
 
         public void overwrote(Seq<Building> previous){
-            if(previous.size > 0 && previous.first().block == block && previous.first() instanceof ForceProjector.ForceBuild b){
+            if(previous.size > 0 && previous.first().block == block && previous.first() instanceof ShieldedCoreBlockBuild b){
                 broken = b.broken;
                 buildup = b.buildup;
             }
