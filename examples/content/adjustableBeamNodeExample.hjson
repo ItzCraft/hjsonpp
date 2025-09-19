@@ -1,9 +1,18 @@
 type: AdjustableBeamNode
 health: 15
 size: 1
+// 8 nodes
 beamDirections: [
-    {0,1},
-    {1,0},
-    {0,-1},
-    {0,-1}
+  [2, 1]
+  [2, -1]
+  [1, 2]
+  [-1, 2]
+  [-2, 1]
+  [-2, -1]
+  [1, -2]
+  [-1, -2]
+]
+category: power
+requirements: [
+  copper/1
 ]

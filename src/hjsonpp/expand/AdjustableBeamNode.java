@@ -2,18 +2,14 @@ package hjsonpp.expand;
 
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
-import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import mindustry.Vars;
 import mindustry.core.Renderer;
 import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
+import mindustry.graphics.*;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
-import mindustry.world.blocks.power.BeamNode;
-import mindustry.world.blocks.power.PowerGraph;
-import mindustry.world.blocks.power.PowerNode;
+import mindustry.world.blocks.power.*;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
@@ -91,7 +87,7 @@ public class AdjustableBeamNode extends BeamNode {
 					int dst = Math.max(Math.abs(dests[i].x - tile.x),  Math.abs(dests[i].y - tile.y));
 					//don't draw lasers for adjacent blocks
 					if(dst > 1 + size/2){
-						var point = Geometry.d4[i];
+						var point =  new Point2(beamDirections[i][0], beamDirections[i][1]).rotate(rotation);
 						float poff = tilesize/2f;
 						Drawf.laser(laser, laserEnd, x + poff*size*point.x, y + poff*size*point.y, dests[i].worldx() - poff*point.x, dests[i].worldy() - poff*point.y, w);
 					}

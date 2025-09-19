@@ -4,13 +4,13 @@ import arc.util.Time;
 import hjsonpp.expand.meta.AdditionalStats;
 import mindustry.world.blocks.defense.Wall;
 
-public class HealingWall extends Wall{
+public class RestorableWall extends Wall{
     // reload between healing
     public float healReload = 1f;
     // how much heal does wall recieve
     public float healPercent = 7f;
 
-    public HealingWall(String name){
+    public RestorableWall(String name){
         super(name);
     }
 
@@ -20,7 +20,7 @@ public class HealingWall extends Wall{
         stats.add(AdditionalStats.healPercent, healPercent);
     }
 
-    public class HealingWallBuild extends WallBuild {
+    public class RestorableWallBuild extends WallBuild {
         public float charge = 0;
         boolean canHeal = true;
 

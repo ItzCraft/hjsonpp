@@ -10,7 +10,7 @@ variables: outputItem/Items/Liquid/Liquids, progressBar: true/false
 - AdvancedHeaterGenerator - basically the same version as HeaterGenerator but have same things as previous class
 variables: outputItem/Items/Liquid/Liquids, progressBar (boolean)
 - TileGenerator - placeable on only specific tiles
-variables: floors: []
+variables: filter: []
 - AdvancedCoreBlock - basically you can use drawers
 variables: drawers
 - GeneratorCoreBlock - basic core block but it can generate power
@@ -30,6 +30,9 @@ variables: radius: n
 variables: effects: [], effectInterval: n, effectX: n, effectY: n
 - TiledFloor - deprecated Anuken class. Can make big floors (64x64 etc)
 variables: tilingVariants: n, tilingSize: n
+- AdjustableBeamNode - you can create infity nodes from beam node and change it angle
+variables: beamDirections: [[n,n]]
+check examples folder for more information
 
 
 
