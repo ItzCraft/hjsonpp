@@ -83,7 +83,6 @@ public class ShieldCoreBlock extends AdvancedCoreBlock {
 
     //Code below is fully yoinked from Anuke :p
 
-    //TODO json support
     public @Nullable Consume itemConsumer, coolantConsumer;
 
     protected static ShieldCoreBlockBuild paramEntity;
