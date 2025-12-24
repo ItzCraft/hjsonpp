@@ -3,6 +3,8 @@ package hjsonpp.expand.wproc.statements;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
+import arc.util.Align;
+import hjsonpp.expand.wproc.DialogueStyles;
 import hjsonpp.expand.wproc.HjsonppLogic;
 import hjsonpp.expand.wproc.instructions.TextDialogI;
 import mindustry.Vars;
@@ -12,17 +14,20 @@ import mindustry.type.UnitType;
 import mindustry.ui.Styles;
 
 import static mindustry.Vars.iconSmall;
+import static mindustry.Vars.ui;
 
 public class TextDialog extends LStatement{
-    public String text = ":3", unit = "@dagger", uiTemplate = "black;
+    public String text = ":3", unit = "@dagger";
     public String duration = "5";
     public String useBundles = "true";
+    public String uiTemplate = "borderless";
 
     public TextDialog(String[] tokens){
         text = tokens[1];
         unit = tokens[2];
         duration = tokens[3];
         useBundles = tokens[4];
+        uiTemplate = tokens[5];
     }
     public TextDialog(){}
 
@@ -31,31 +36,6 @@ public class TextDialog extends LStatement{
         table.add(" text ");
 
         fields(table, text, v -> text = v);
-
-        table.add(" unit ");
-
-        TextField field = field(table, unit, str -> unit = str).get();
-
-        table.button(b -> {
-            b.image(Icon.pencilSmall);
-            b.clicked(() -> showSelectTable(b, (t, hide) -> {
-                t.row();
-                t.table(i -> {
-                    i.left();
-                    int c = 0;
-                    for(UnitType item : Vars.content.units()){
-                        if(!item.unlockedNow() || item.isHidden() || !item.logicControllable) continue;
-                        i.button(new TextureRegionDrawable(item.uiIcon), Styles.flati, iconSmall, () -> {
-                            unit = "@" + item.name;
-                            field.setText(unit);
-                            hide.run();
-                        }).size(40f);
-
-                        if(++c % 6 == 0) i.row();
-                    }
-                }).colspan(3).width(240f).left();
-            }));
-        }, Styles.logict, () -> {}).size(40f).padLeft(-2).color(table.color);
 
         table.add(" duration ");
 
@@ -67,7 +47,59 @@ public class TextDialog extends LStatement{
 
         table.add(" UI template ");
 
-        TextField fielda = fielda(table, uiTemplate, str -> uiTemplate = str).get();
+        table.button(b -> {
+                    b.label(() -> uiTemplate)
+                            .growX()
+                            .wrap()
+                            .labelAlign(Align.center);
+                    b.clicked(() -> showSelectTable(b, (t, hide) -> {
+                        t.background(Styles.black6);
+                        t.table(i -> {
+                            i.left();
+                            int c = 0;
+                            for(DialogueStyles style : DialogueStyles.values()){
+                                i.button(style.name(), Styles.flatt, () -> {
+                                    uiTemplate = style.name();
+                                    hide.run();
+                                }).width(140f).height(40f);
+                                if(++c % 2 == 0) i.row();
+                            }
+                        }).pad(6f);
+                    }));
+                }, Styles.logict, () -> {}).size(160f, 40f).padLeft(2).color(table.color);
+        try{
+            switch (uiTemplate) {
+                case "bordless", "border" -> {
+                    table.add(" unit ");
+
+                    TextField field = field(table, unit, str -> unit = str).get();
+
+                    table.button(b -> {
+                        b.image(Icon.pencilSmall);
+                        b.clicked(() -> showSelectTable(b, (t, hide) -> {
+                            t.row();
+                            t.table(i -> {
+                                i.left();
+                                int c = 0;
+                                for (UnitType item : Vars.content.units()) {
+                                    if (!item.unlockedNow() || item.isHidden() || !item.logicControllable) continue;
+                                    i.button(new TextureRegionDrawable(item.uiIcon), Styles.flati, iconSmall, () -> {
+                                        unit = "@" + item.name;
+                                        field.setText(unit);
+                                        hide.run();
+                                    }).size(40f);
+
+                                    if (++c % 6 == 0) i.row();
+                                }
+                            }).colspan(3).width(240f).left();
+                        }));
+                    }, Styles.logict, () -> {
+                    }).size(40f).padLeft(-2).color(table.color);
+                }
+            }
+        }catch(Exception e) {
+            ui.announce("Failed to parse ui template");
+        }
     }
 
     @Override
@@ -77,7 +109,7 @@ public class TextDialog extends LStatement{
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
-        return new TextDialogI(builder.var(text), builder.var(unit), builder.var(duration), builder.var(useBundles), builder.var(uiTemplate);
+        return new TextDialogI(builder.var(text), builder.var(unit), builder.var(duration), builder.var(useBundles), builder.var(uiTemplate));
     }
 
     @Override
