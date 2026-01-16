@@ -23,7 +23,6 @@ public class Recipe{
 
     public float powerUse = 0f;
     public float craftTime = 60f;
-    public float heatUse = 0f;
 
     //Output
     @Nullable

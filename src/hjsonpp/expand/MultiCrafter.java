@@ -1,5 +1,6 @@
 package hjsonpp.expand;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -41,14 +42,135 @@ public class MultiCrafter extends GenericCrafter {
         craftRecipes.addAll(recipes);
     }
 
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.remove(Stat.productionTime);
+        stats.remove(Stat.input);
+        stats.remove(Stat.output);
+        stats.remove(Stat.powerUse);
 
+        stats.add(AdditionalStats.recipes, root -> {
+
+            root.background(Styles.grayPanelDark);
+
+            for(int i = 0; i < craftRecipes.size; i++){
+                Recipe recipe = craftRecipes.get(i);
+                if(recipe == null) continue;
+
+                root.row();
+                root.table(row -> {
+
+                    row.table(left -> {
+                        buildRecipeView(left, recipe);
+                    }).left().pad(6).growX();
+
+                    row.table(right -> {
+                        buildRecipeStats(right, recipe);
+                    }).right().pad(6).width(140f);
+
+                }).growX();
+
+                if(i < craftRecipes.size - 1){
+                    root.row();
+                    root.image(Tex.whiteui)
+                            .color(Pal.darkestGray)
+                            .height(2.5f)
+                            .growX();
+                }
+            }});
+    }
+
+    private void buildRecipeView(Table table, Recipe recipe){
+        table.table(recipeTable -> {
+            recipeTable.table(input -> {
+                addRecipeResources(input, recipe, false);
+            }).left().growX();
+            recipeTable.add(">")
+                    .color(Pal.accent)
+                    .center();
+            recipeTable.table(output -> {
+                addRecipeResources(output, recipe, true);
+            }).right().growX();
+
+        }).growX();
+    }
+
+    private void buildRecipeStats(Table table, Recipe recipe){
+        table.defaults().left().padBottom(2);
+        table.add("[lightgray]Time:[] [white]" +
+                Strings.fixed(recipe.craftTime / 60f, 1) + "s");
+        table.row();
+        if(recipe.powerUse > 0){
+            table.add("[lightgray]Power:[] [white]" +
+                    Strings.fixed(recipe.powerUse * 60f, 1) + "/s");
+            table.row();
+        }
+    }
+
+    protected void addRecipeResources(Table table, Recipe recipe, boolean isOutput){
+        if(!isOutput){
+            if(recipe.inputItem != null){
+                addResourceElement(table, recipe.inputItem.item.uiIcon,
+                        Strings.fixed(recipe.inputItem.amount, 0) + "x", false);
+            }
+            if(recipe.inputLiquid != null){
+                addResourceElement(table, recipe.inputLiquid.liquid.uiIcon,
+                        Strings.fixed(recipe.inputLiquid.amount * 60, 1) + "/s", false);
+            }
+            if(recipe.inputItems != null){
+                for(ItemStack input : recipe.inputItems){
+                    if(input == null || input.item == null) continue;
+                    addResourceElement(table, input.item.uiIcon,
+                            Strings.fixed(input.amount, 0) + "x", false);
+                }
+            }
+            if(recipe.inputLiquids != null){
+                for(LiquidStack liquid : recipe.inputLiquids){
+                    if(liquid == null || liquid.liquid == null) continue;
+                    addResourceElement(table, liquid.liquid.uiIcon,
+                            Strings.fixed(liquid.amount * 60, 1) + "/s", false);
+                }
+            }
+        } else {
+            if(recipe.outputItem != null){
+                addResourceElement(table, recipe.outputItem.item.uiIcon,
+                        Strings.fixed(recipe.outputItem.amount, 0) + "x", true);
+            }
+            if(recipe.outputLiquid != null){
+                addResourceElement(table, recipe.outputLiquid.liquid.uiIcon,
+                        Strings.fixed(recipe.outputLiquid.amount * 60, 1) + "/s", true);
+            }
+            if(recipe.outputItems != null){
+                for(ItemStack output : recipe.outputItems){
+                    if(output == null || output.item == null) continue;
+                    addResourceElement(table, output.item.uiIcon,
+                            Strings.fixed(output.amount, 0) + "x", true);
+                }
+            }
+            if(recipe.outputLiquids != null){
+                for(LiquidStack liquid : recipe.outputLiquids){
+                    if(liquid == null || liquid.liquid == null) continue;
+                    addResourceElement(table, liquid.liquid.uiIcon,
+                            Strings.fixed(liquid.amount * 60, 1) + "/s", true);
+                }
+            }
+        }
+    }
+
+    private void addResourceElement(Table table, TextureRegion icon, String text, boolean isOutput){
+        table.table(element -> {
+            element.image(icon).size(24).padRight(2);
+            element.add(text).color(Color.lightGray);
+        }).padRight(4);
+    }
 
     @Override
     public void init(){
         super.init();
     }
 
-    public class MultiCrafterBuild extends GenericCrafterBuild{
+    public class MultiCrafterBuild extends GenericCrafterBuild {
         public int curRecipeIndex = 0;
         public Recipe currentRecipe = craftRecipes.get(curRecipeIndex);
 
@@ -216,39 +338,38 @@ public class MultiCrafter extends GenericCrafter {
 
             if(items != null && timer(timerDump, dumpTime / timeScale)){
                 for(ItemStack output : items){
-                    dump(output.item);
+                    if(output != null && output.item != null){
+                        dump(output.item);
+                    }
                 }
             }
 
             if(liquids != null){
-                for(int i = 0; i < liquids .length; i++){
+                for(int i = 0; i < liquids.length; i++){
                     int dir = liquidOutputDirections.length > i ? liquidOutputDirections[i] : -1;
-
                     dumpLiquid(liquids[i].liquid, 2f, dir);
                 }
             }
         }
 
         public ItemStack[] CreateItemstack(){
-            ItemStack[] out = null;
             if(currentRecipe.outputItems != null){
-                out = currentRecipe.outputItems;
+                return currentRecipe.outputItems;
             }
-            if(currentRecipe.outputItem != null){
-                out = ItemStack.with(currentRecipe.outputItem);
+            else if(currentRecipe.outputItem != null){
+                return new ItemStack[]{currentRecipe.outputItem};
             }
-            return out;
+            return null;
         }
 
         public LiquidStack[] CreateLiquidstack(){
-            LiquidStack[] out = null;
             if(currentRecipe.outputLiquids != null){
-                out = currentRecipe.outputLiquids;
+                return currentRecipe.outputLiquids;
             }
-            if(currentRecipe.outputLiquid != null){
-                out = LiquidStack.with(currentRecipe.outputLiquid);
+            else if(currentRecipe.outputLiquid != null){
+                return new LiquidStack[]{currentRecipe.outputLiquid};
             }
-            return out;
+            return null;
         }
 
         @Override
