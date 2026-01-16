@@ -7,5 +7,7 @@ public class AdditionalStats{
     public static Stat
             healPercent = new Stat("heal-percent", StatCat.general),
             produceChance = new Stat("produce-chance", StatCat.crafting),
+            reloadFrom = new Stat("expansion-reload-at-start", Stat.reload.category),
+            reloadTo = new Stat("expansion-reload-at-end", Stat.reload.category),
             recipes = new Stat("recipes", StatCat.crafting);
 }
