@@ -18,8 +18,6 @@ variables: powerProduction: n
 - AccelTurret - turret which have acceleration
 variables: speedUpPerShoot: n, maxAccel: n, cooldownSpeed: n
 - DrawTeam - drawer class. Draws -team sprite
-
-- ## NEW!
 - ColliderCrafter - basic GenericCrafter but it outputs items/liquids with specific chance.
 variables: produceChance: n (1=100%)
 - OverHeatTurret - Turret which overheats after some shoots.
@@ -30,11 +28,20 @@ variables: radius: n
 variables: effects: [], effectInterval: n, effectX: n, effectY: n
 - TiledFloor - deprecated Anuken class. Can make big floors (64x64 etc)
 variables: tilingVariants: n, tilingSize: n
-- AdjustableBeamNode - you can create infity nodes from beam node and change it angle
+- AdjustableBeamNode - you can create infirmity nodes from beam node and change it angle (highly recommended to check examples folder)
 variables: beamDirections: [[n,n]]
+
+- ## NEW!
+- MultiCrafter - GenericCrafter with multiple recipes available. check examples folder for more information.
+- DrawableBlock - Just Block type, but you can use drawers
+variables: drawers: []
+- RestorableWall - Wall which can heal itself. 
+variables: healReload: n, healPercent: n
+-  You can now make dialogues through world processors. check it by yourself in game for more information
+
 check examples folder for more information
 
 
 
 # WARNING
-this library is still WIP. report all errors to [IJT team mods discord server](https://discord.gg/btUe3rhGuQ)
+Report all errors to [IJT team mods discord server](https://discord.gg/btUe3rhGuQ)
