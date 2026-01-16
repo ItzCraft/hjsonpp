@@ -24,8 +24,6 @@ variables: produceChance: n (1=100%)
 variables: overHeatAmount: n, timeToCooldown: n
 - AdjustableShieldWall - Basic shield wall, but you can turn it on and off. and can justify shield radius
 variables: radius: n
-- EffectWeapon - Weapon class where you can set a list of effects which will always be shown on unit. 
-variables: effects: [], effectInterval: n, effectX: n, effectY: n
 - TiledFloor - deprecated Anuken class. Can make big floors (64x64 etc)
 variables: tilingVariants: n, tilingSize: n
 - AdjustableBeamNode - you can create infirmity nodes from beam node and change it angle (highly recommended to check examples folder)
