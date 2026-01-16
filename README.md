@@ -16,7 +16,7 @@ variables: drawers
 - GeneratorCoreBlock - basic core block but it can generate power
 variables: powerProduction: n
 - AccelTurret - turret which have acceleration
-variables: speedUpPerShoot: n, maxAccel: n, cooldownSpeed: n
+variables: speedUpPerShoot: n, maxAccel: n, cooldownSpeed: n, canOverheat: false/true, overheatMultiplier: n, maxOverheatThreshold: n,overheatTime: n, overheatEffectChance: n, overheatEffect: effect
 - DrawTeam - drawer class. Draws -team sprite
 - ColliderCrafter - basic GenericCrafter but it outputs items/liquids with specific chance.
 variables: produceChance: n (1=100%)
