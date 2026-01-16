@@ -8,4 +8,5 @@ filter: [
     grass,
     ice
 ]
+category: power
 powerProduction: 120

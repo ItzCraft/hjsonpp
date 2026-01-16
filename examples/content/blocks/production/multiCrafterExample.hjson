@@ -1,0 +1,37 @@
+type: MultiCrafter
+name: MultiCrafter example
+description: idk
+health: 1000
+size: 3
+requirements: [
+copper/2,
+lead/5
+]
+category: production
+
+# recipes are being created by craftRecipes variable which contains list of all recipes.
+craftRecipes: [
+    {
+        inputItems: [
+            copper/2
+        ],
+        outputItems: [
+            lead/1
+        ]
+        craftTime: 120
+    }
+    {
+        inputItems: [
+            titanium/5,
+            graphite/3
+        ],
+        outputItems: [
+            silicon/1
+        ],
+        outputLiquids: [
+            water/0.1
+        ],
+        powerUse: 1
+        craftTime: 60
+    }
+]

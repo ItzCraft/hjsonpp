@@ -1,0 +1,16 @@
+type: ColliderCrafter
+name: colliderCrafter example
+description: idk
+health: 1
+size: 4
+requirements: [
+titanium/5
+silicon/3
+]
+
+outputItem: copper/100
+consumes: {
+    items: [
+        copper/1
+    ]
+}

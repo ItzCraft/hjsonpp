@@ -1,15 +1,14 @@
 package hjsonpp.expand;
 
 import arc.math.Mathf;
-import arc.util.Time;
 import hjsonpp.expand.meta.AdditionalStats;
 import mindustry.world.blocks.production.GenericCrafter;
 
-public class ColiderCrafter extends GenericCrafter{
+public class ColliderCrafter extends GenericCrafter{
     // what chance it to produce item/liquid. 1 = 100%
     public double produceChance = 0.5f;
 
-    public ColiderCrafter(String name){
+    public ColliderCrafter(String name){
         super(name);
     }
 

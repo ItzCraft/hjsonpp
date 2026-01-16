@@ -1,5 +1,6 @@
 package hjsonpp;
 
+import hjsonpp.expand.ColliderCrafter;
 import hjsonpp.expand.wproc.CustomStyles;
 import hjsonpp.expand.wproc.HjsonppLogic;
 import mindustry.mod.*;
@@ -13,10 +14,11 @@ public class HjsonPlusPlusMod extends Mod{
         ClassMap.classes.put("AdvancedCoreBlock", hjsonpp.expand.AdvancedCoreBlock.class);
         ClassMap.classes.put("GeneratorCoreBlock", hjsonpp.expand.GeneratorCoreBlock.class);
         //ClassMap.classes.put("ShieldCoreBlock", hjsonpp.expand.ShieldCoreBlock.class);
-        ClassMap.classes.put("ColliderCrafter", hjsonpp.expand.ColiderCrafter.class);
+        ClassMap.classes.put("ColliderCrafter", ColliderCrafter.class);
+        ClassMap.classes.put("MultiCrafter", hjsonpp.expand.MultiCrafter.class);
         ClassMap.classes.put("AccelTurret", hjsonpp.expand.AccelTurret.class);
         ClassMap.classes.put("OverHeatTurret", hjsonpp.expand.OverHeatTurret.class);
-        //ClassMap.classes.put("RestorableWall", hjsonpp.expand.RestorableWall.class);
+        ClassMap.classes.put("RestorableWall", hjsonpp.expand.RestorableWall.class);
         ClassMap.classes.put("AdjustableShieldWall", hjsonpp.expand.AdjustableShieldWall.class);
         ClassMap.classes.put("AdjustableBeamNode", hjsonpp.expand.AdjustableBeamNode.class);
         ClassMap.classes.put("DrawableBlock", hjsonpp.expand.DrawableBlock.class);
