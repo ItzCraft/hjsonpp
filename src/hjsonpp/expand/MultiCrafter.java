@@ -23,12 +23,13 @@ import mindustry.world.meta.Stat;
  */
 public class MultiCrafter extends GenericCrafter {
 
-    public MultiCrafter(String name) {
+    public MultiCrafter(String name){
         super(name);
         configurable = true;
         saveConfig = true;
         copyConfig = true;
         hasPower = true;
+        hasHeat = true;
         update = true;
         sync = true;
         hasItems = true;
