@@ -22,6 +22,8 @@ public class Recipe{
     public LiquidStack inputLiquid;
 
     public float powerUse = 0f;
+    public float heatConsume = 0f;
+    public float heatOutput = 0f;
     public float craftTime = 60f;
 
     //Output
