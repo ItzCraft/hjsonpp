@@ -100,56 +100,46 @@ public class ConsumeRecipe extends Consume {
     }
 
     @Override
-    public float efficiency(Building build){
-        if(build instanceof MultiCrafter.MultiCrafterBuild) {
-            Recipe curRecipe = ((MultiCrafter.MultiCrafterBuild) build).currentRecipe;
-            if(curRecipe == null) return 0f;
+public float efficiency(Building build){
+    if(build instanceof MultiCrafter.MultiCrafterBuild b){
+        Recipe r = b.currentRecipe;
+        if(r == null) return 0f;
 
-            ItemStack[] items = curRecipe.inputItems;
+        ItemStack[] items = r.inputItems;
+        if(items == null && r.inputItem != null) items = new ItemStack[]{r.inputItem};
 
-            if(items == null && curRecipe.inputItem != null) {
-                items = new ItemStack[]{curRecipe.inputItem};
-            }
+        LiquidStack[] liquids = r.inputLiquids;
+        if(liquids == null && r.inputLiquid != null) liquids = new LiquidStack[]{r.inputLiquid};
 
-            LiquidStack[] liquids = curRecipe.inputLiquids;
-
-            if(liquids == null && curRecipe.inputLiquid != null) {
-                liquids = new LiquidStack[]{curRecipe.inputLiquid};
-            }
-
-            float firstCheck = 1f;
-            if (items != null) {
-                boolean hasAllItems = true;
-                for(var stack : items) {
-                    if(stack != null && stack.item != null) {
-                        if(!build.items.has(stack.item, Math.round(stack.amount * multiplier.get(build)))) {
-                            hasAllItems = false;
-                            break;
-                        }
-                    }
-                }
-                firstCheck = (build.consumeTriggerValid() || hasAllItems) ? 1f : 0f;
-            }
-
-            float mult = multiplier.get(build);
-            float ed = build.edelta() * build.efficiencyScale();
-            float min1 = 1f;
-            if (liquids != null) {
-                for (var stack : liquids) {
-                    if(stack != null && stack.liquid != null) {
-                        min1 = Math.min(build.liquids.get(stack.liquid) / (stack.amount * ed * mult), min1);
-                    }
+        float first = 1f;
+        if(items != null){
+            for(var s : items){
+                if(s != null && !b.items.has(s.item, Math.round(s.amount * multiplier.get(b)))){
+                    first = 0f;
+                    break;
                 }
             }
-
-            float secCheck = 1f;
-            if (curRecipe.powerUse > 0 && build.power != null) secCheck = build.power.status;
-            float min2 = Math.min(firstCheck, secCheck);
-            return Math.min(min1, min2);
         }
-        return 0f;
-    }
 
+        float mult = multiplier.get(b);
+        float ed = b.edelta() * b.efficiencyScale();
+        float liquidMin = 1f;
+        if(liquids != null){
+            for(var s : liquids){
+                liquidMin = Math.min(
+                    b.liquids.get(s.liquid) / (s.amount * ed * mult),
+                    liquidMin
+                );
+            }
+        }
+
+        float power = r.powerUse > 0 && b.power != null ? b.power.status : 1f;
+        float heat = r.heatConsume > 0 ? Mathf.clamp(b.heat / r.heatConsume) : 1f;
+
+        return Math.min(Math.min(first, liquidMin), Math.min(power, heat));
+    }
+    return 0f;
+}
     @Override
     public void display(Stats stats){}
 
