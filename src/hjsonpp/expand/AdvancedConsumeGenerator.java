@@ -20,6 +20,7 @@ public class AdvancedConsumeGenerator extends ConsumeGenerator{
     @Nullable
     public LiquidStack[] outputLiquids;
     public int[] liquidOutputDirections = new int[]{-1};
+    public float warmupSpeed = 0.019f;
 
     // is production bar will be displayed
     public boolean progressBar = false;
@@ -31,26 +32,26 @@ public class AdvancedConsumeGenerator extends ConsumeGenerator{
     @Override
     public void setStats(){
         super.setStats();
-        if (this.outputItems != null) {
-            this.stats.add(Stat.output, StatValues.items(this.itemDuration, this.outputItems));
+        if (outputItems != null) {
+            stats.add(Stat.output, StatValues.items(this.itemDuration, outputItems));
         }
-        if (this.outputLiquids != null) {
-            this.stats.add(Stat.output, StatValues.liquids(1.0F, this.outputLiquids));
+        if (outputLiquids != null) {
+            stats.add(Stat.output, StatValues.liquids(1.0F, outputLiquids));
         }
     }
 
     @Override
     public void setBars(){
         super.setBars();
-        if (this.outputLiquids != null && this.outputLiquids.length > 0) {
-            this.removeBar("liquid");
+        if (outputLiquids != null && outputLiquids.length > 0) {
+            removeBar("liquid");
 
-            for(LiquidStack stack : this.outputLiquids) {
-                this.addLiquidBar(stack.liquid);
+            for(LiquidStack stack : outputLiquids) {
+                addLiquidBar(stack.liquid);
             }
         }
         if (progressBar) {
-            this.addBar("hj-bar.progress", (AdvancedConsumeGeneratorBuild entity) ->
+            addBar("hj-bar.progress", (AdvancedConsumeGeneratorBuild entity) ->
                     new Bar(
                             () -> Core.bundle.format("bar.production-progress", Strings.fixed(entity.totalProgress() / itemDuration * 100, 1)),
                             () -> Pal.accent,
@@ -62,73 +63,87 @@ public class AdvancedConsumeGenerator extends ConsumeGenerator{
 
     @Override
     public void init(){
-        if (this.outputItems == null && this.outputItem != null) {
-            this.outputItems = new ItemStack[]{this.outputItem};
+        if (outputItems == null && outputItem != null) {
+            outputItems = new ItemStack[]{outputItem};
         }
 
-        if (this.outputLiquids == null && this.outputLiquid != null) {
-            this.outputLiquids = new LiquidStack[]{this.outputLiquid};
+        if (outputLiquids == null && outputLiquid != null) {
+            outputLiquids = new LiquidStack[]{outputLiquid};
         }
 
-        if (this.outputLiquid == null && this.outputLiquids != null && this.outputLiquids.length > 0) {
-            this.outputLiquid = this.outputLiquids[0];
+        if (outputLiquid == null && outputLiquids != null && outputLiquids.length > 0) {
+            outputLiquid = outputLiquids[0];
         }
 
-        this.outputsLiquid = this.outputLiquids != null;
-        if (this.outputItems != null) {
-            this.hasItems = true;
+        outputsLiquid = outputLiquids != null;
+        if (outputItems != null) {
+            hasItems = true;
         }
 
-        if (this.outputLiquids != null) {
-            this.hasLiquids = true;
+        if (outputLiquids != null) {
+            hasLiquids = true;
         }
 
         super.init();
     }
 
     public boolean outputsItems() {
-        return this.outputItems != null;
+        return outputItems != null;
     }
 
     public class AdvancedConsumeGeneratorBuild extends ConsumeGeneratorBuild{
+        public float progress;
+        public float totalProgress;
+        public float warmup;
         @Override
-        public void updateTile(){
-            if (AdvancedConsumeGenerator.this.outputLiquids != null) {
-                float inc = this.getProgressIncrease(1.0F);
+     public void updateTile(){
+            if(efficiency > 0){
 
-                for(LiquidStack output : AdvancedConsumeGenerator.this.outputLiquids) {
-                    this.handleLiquid(this, output.liquid, Math.min(output.amount * inc, AdvancedConsumeGenerator.this.liquidCapacity - this.liquids.get(output.liquid)));
+                progress += getProgressIncrease(craftTime);
+                warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
+                if (AdvancedConsumeGenerator.outputLiquids != null) {
+                    float inc = getProgressIncrease(1.0F);
+
+                    for(LiquidStack output : AdvancedConsumeGenerator.outputLiquids) {
+                        handleLiquid(this, output.liquid, Math.min(output.amount * inc, AdvancedConsumeGenerator.liquidCapacity - this.liquids.get(output.liquid)));
+                    }
                 }
+            }else{
+                warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
             }
-            this.craft();
-            this.dumpOutputs();
-            super.updateTile();
+            
+            totalProgress += warmup * Time.delta;
+
+            if(progress>=1f){
+                craft();
+            }
+            dumpOutputs();
+            super.updateTile();          
         }
         public void craft() {
-            this.consume();
-            if (AdvancedConsumeGenerator.this.outputItems != null) {
-                for(ItemStack output : AdvancedConsumeGenerator.this.outputItems) {
+            consume();
+            if (AdvancedConsumeGenerator.outputItems != null) {
+                for(ItemStack output : AdvancedConsumeGenerator.outputItems) {
                     for(int i = 0; i < output.amount; ++i) {
-                        this.offload(output.item);
+                        offload(output.item);
                     }
                 }
             }
         }
 
         public void dumpOutputs() {
-            if (AdvancedConsumeGenerator.this.outputItems != null && this.timer(AdvancedConsumeGenerator.this.timerDump, (float)AdvancedConsumeGenerator.this.dumpTime / this.timeScale)) {
-                for(ItemStack output : AdvancedConsumeGenerator.this.outputItems) {
-                    this.dump(output.item);
+            if (AdvancedConsumeGenerator. outputItems != null && timer(AdvancedConsumeGenerator.timerDump, (float)AdvancedConsumeGenerator.dumpTime / timeScale)) {
+                for(ItemStack output : AdvancedConsumeGenerator.outputItems) {
+                    dump(output.item);
                 }
             }
 
-            if (AdvancedConsumeGenerator.this.outputLiquids != null) {
-                for(int i = 0; i < AdvancedConsumeGenerator.this.outputLiquids.length; ++i) {
-                    int dir = AdvancedConsumeGenerator.this.liquidOutputDirections.length > i ? AdvancedConsumeGenerator.this.liquidOutputDirections[i] : -1;
-                    this.dumpLiquid(AdvancedConsumeGenerator.this.outputLiquids[i].liquid, 2.0F, dir);
+            if (AdvancedConsumeGenerator.outputLiquids != null) {
+                for(int i = 0; i < AdvancedConsumeGenerator.outputLiquids.length; ++i) {
+                    int dir = AdvancedConsumeGenerator.liquidOutputDirections.length > i ? AdvancedConsumeGenerator.liquidOutputDirections[i] : -1;
+                    dumpLiquid(AdvancedConsumeGenerator.outputLiquids[i].liquid, 2.0F, dir);
                 }
             }
-
         }
     }
 }
