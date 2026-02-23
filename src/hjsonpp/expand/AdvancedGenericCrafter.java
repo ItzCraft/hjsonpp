@@ -11,7 +11,7 @@ public class AdvancedGenericCrafter extends GenericCrafter{
         super(name);
     }
 
-        @Override
+    @Override
     public boolean rotatedOutput(int fromX, int fromY, Tile destination){
         if(!(destination.build instanceof ConduitBuild)) return false;
 
