@@ -1,5 +1,6 @@
 package hjsonpp;
 
+import hjsonpp.expand.wproc.*;
 import mindustry.mod.*;
 
 public class HjsonPlusPlusMod extends Mod{
@@ -20,5 +21,16 @@ public class HjsonPlusPlusMod extends Mod{
         ClassMap.classes.put("DrawTeam", hjsonpp.expand.DrawTeam.class);
         ClassMap.classes.put("EffectWeapon", hjsonpp.expand.EffectWeapon.class);
         ClassMap.classes.put("CustomEffects", hjsonpp.expand.CustomEffects.class);
+    }
+
+    @Override
+    public void init(){
+        super.init();
+        CustomStyles.load();
+    }
+
+    @Override
+    public void loadContent(){
+        HjsonppLogic.init();
     }
 }

@@ -1,13 +1,10 @@
 name: "hjsonpp"
 displayName: "hjson++"
 repo: "ItzCraft/hjsonpp"
-
-version: "1.12"
-minGameVersion: 154
-
+author: "ItzCraft
+helpers: Photon_gravity, Sputnuc"
 main: "hjsonpp.HjsonPlusPlusMod"
-java: true
-
-author: "Main author: ItzCraft. \nHelpers: Photon_gravity, Sputnuc, AnDashik."
-description: "Adds some new additional classes to help hjson modders. \nNote: this a library. Not a playable mod."
-subtitle: "Goodluck with modding!"
+description: "Adds some new additional classes to help hjson modders. \nNote: this a library. Not playable mod."
+version: 1.14
+subtitle: goodluck with modding!
+minGameVersion: 157
