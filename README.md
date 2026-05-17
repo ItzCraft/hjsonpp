@@ -18,8 +18,6 @@ variables: powerProduction: n
 - AccelTurret - turret which have acceleration
 variables: speedUpPerShoot: n, maxAccel: n, cooldownSpeed: n
 - DrawTeam - drawer class. Draws -team sprite
-
-- ## NEW!
 - ColliderCrafter - basic GenericCrafter but it outputs items/liquids with specific chance.
 variables: produceChance: n (1=100%)
 - OverHeatTurret - Turret which overheats after some shoots.
@@ -32,6 +30,9 @@ variables: effects: [], effectInterval: n, effectX: n, effectY: n
 variables: tilingVariants: n, tilingSize: n
 - AdjustableBeamNode - you can create infity nodes from beam node and change it angle
 variables: beamDirections: [[n,n]]
+
+- ## NEW!
+- added cutscene thing world processor
 check examples folder for more information
 
 
