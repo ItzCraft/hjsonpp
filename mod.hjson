@@ -1,5 +1,5 @@
-displayName: "hjson++"
 name: "hjsonpp"
+displayName: "hjson++"
 repo: "ItzCraft/hjsonpp"
 author: "ItzCraft
 helpers: Photon_gravity, Sputnuc"
@@ -8,4 +8,3 @@ description: "Adds some new additional classes to help hjson modders. \nNote: th
 version: 1.14
 subtitle: goodluck with modding!
 minGameVersion: 157
-java: true
