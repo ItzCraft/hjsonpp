@@ -37,7 +37,7 @@ public class TextDialog extends LStatement{
     public void build(Table table){
         table.add(" text ");
 
-        fields(table, text, v -> text = v);
+        fields(table, text, v -> text = '"' + v + '"');
 
         table.add(" duration ");
 
