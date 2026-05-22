@@ -23,6 +23,7 @@ public class HjsonPlusPlusMod extends Mod{
         ClassMap.classes.put("EffectWeapon", hjsonpp.expand.EffectWeapon.class);
         ClassMap.classes.put("CustomEffects", hjsonpp.expand.CustomEffects.class);
         ClassMap.classes.put("BlackHoleBulletType", hjsonpp.expand.BlackHoleBulletType.class);
+        ClassMap.classes.put("ModeTurret", hjsonpp.expand.ModeTurret.class);
     }
 
     @Override

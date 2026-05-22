@@ -7,7 +7,7 @@ import hjsonpp.expand.meta.AdditionalStats;
 import mindustry.world.blocks.production.GenericCrafter;
 
 public class ChanceCrafter extends GenericCrafter{
-    // what chance it to produce item/liquid. 1 = 100%
+    //chance to produce item. 0 - 1.
     public float produceChance = 0.5f;
 
     public ChanceCrafter(String name){
