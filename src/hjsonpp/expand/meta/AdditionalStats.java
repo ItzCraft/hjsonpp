@@ -8,5 +8,7 @@ public class AdditionalStats{
             healPercent = new Stat("heal-percent", StatCat.general),
             produceChance = new Stat("produce-chance", StatCat.crafting),
             reloadFrom = new Stat("reload-from", StatCat.function),
-            reloadTo = new Stat("reload-from", StatCat.function);
+            reloadTo = new Stat("reload-from", StatCat.function),
+            recipe = new Stat("mc-recipe", StatCat.function);
+
 }
