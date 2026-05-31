@@ -50,7 +50,7 @@ public class ModeTurret extends ItemTurret{
 
     public ModeTurret(String name) {
         super(name);
-        turModes.add(defaultMode);
+        turModes.insert(0, defaultMode);
         sync = true;
         saveConfig = true;
         copyConfig = true;

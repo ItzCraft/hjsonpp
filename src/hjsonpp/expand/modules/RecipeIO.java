@@ -1,8 +1,11 @@
 package hjsonpp.expand.modules;
 
+import arc.Core;
 import arc.scene.ui.layout.Table;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
+import arc.util.Nullable;
+import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Building;
@@ -21,10 +24,14 @@ import mindustry.world.draw.DrawBlock;
 import mindustry.world.meta.*;
 
 public class RecipeIO {
+    @Nullable
     public ItemStack[] input;
+    @Nullable
     public ItemStack[] output;
     public float powerUse = 0;
+    @Nullable
     public LiquidStack[] liquidIn;
+    @Nullable
     public LiquidStack[] liquidOut;
     public float recipeTime = 60;
     public boolean needDoUnlock = true;
@@ -32,12 +39,13 @@ public class RecipeIO {
     public float totalProgress = 0;
     public float warmup = 0;
 
+    @Nullable
     public DrawBlock uniqueDrawer;
 
-    public UnlockableContent primaryOutput;
-
+    @Nullable
     public boolean[] itemFilter, liquidFilter;
 
+    @Nullable
     public Seq<UnlockableContent> recipeReq = new Seq<>();
 
     public void dumpOutputs(Building build) {
@@ -214,6 +222,10 @@ public class RecipeIO {
     public void apply(Block block){
         if(output != null || input != null) block.hasItems = true;
         if(liquidIn != null || liquidOut != null) block.hasLiquids = true;
+        if(powerUse != 0) {
+            block.hasPower = true;
+            block.consumesPower = true;
+        }
     }
 
     public void display(Table table){
@@ -235,11 +247,24 @@ public class RecipeIO {
                             value.display(in);
                         }
                     }
-                }).left().grow().pad(10f);
+                    if(this.powerUse != 0) in.table(pwrUse -> {
+                        pwrUse.image(Icon.power).color(Pal.accent).size(40);
+                        pwrUse.add(this.powerUse + "/s");
+                    });
+                }).left().pad(10f);
+
 
                 t.table(arrow ->{
                     arrow.image(Icon.right).color(Pal.darkishGray).size(40f);
-                }).pad(10f);
+                    arrow.left();
+                });
+
+                t.table(time -> {
+                    time.image(Icon.crafting).color(Pal.accent).size(40);
+                    time.left();
+                });
+
+                t.add(Core.bundle.format("ui.craftTime", Strings.autoFixed(this.recipeTime / 60, 3))).color(Pal.accent).pad(10f).left();
 
                 t.table(out ->{
                     out.right();
@@ -252,9 +277,9 @@ public class RecipeIO {
                     }
                 }).right().grow().pad(10f);
             }else {
-                t.image(Icon.lock).color(Pal.darkerGray).size(40f).pad(10f);
+                t.image(Icon.lock).color(Pal.darkerGray).size(40f).grow().pad(10f);
             }
-        });
+        }).growX();
     }
     public void displayOut(Stats stats) {
         if(output != null)stats.add(Stat.output, stats.timePeriod < 0 ? StatValues.items(output) : StatValues.items(stats.timePeriod, output));

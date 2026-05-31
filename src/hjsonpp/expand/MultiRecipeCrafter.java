@@ -1,11 +1,14 @@
 package hjsonpp.expand;
 
 import arc.Core;
+import arc.func.Func;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.EnumSet;
+import arc.struct.ObjectMap;
+import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Strings;
@@ -25,12 +28,15 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
+import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.consumers.Consume;
+import mindustry.world.consumers.ConsumePowerDynamic;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.StatValue;
 
 public class MultiRecipeCrafter extends Block {
 
@@ -53,21 +59,7 @@ public class MultiRecipeCrafter extends Block {
         flags = EnumSet.of(BlockFlag.factory);
         copyConfig = true;
         saveConfig = true;
-        config(Integer.class, (DynamicCraferBuild crafter, Integer recipeIDX) ->{
-            crafter.recipeIDX = recipeIDX;
-        });
-    }
-
-    //Adding recipes for recipes array :/
-    public void addRecipes(RecipeIO...r){
-        recipes.add(r);
-    }
-
-    public void addRecipesNonRequire(Boolean unlocked, RecipeIO...r){
-        for(RecipeIO recipe : r){
-            recipe.needDoUnlock = false;
-        }
-        recipes.add(r);
+        config(Integer.class, MultiRecipeCrafterBuild::setRecipe);
     }
 
     //Bars
@@ -77,6 +69,7 @@ public class MultiRecipeCrafter extends Block {
         removeBar("items");
         removeBar("liquid");
         removeBar("liquids");
+        removeBar("power");
     }
 
     @Override
@@ -112,7 +105,7 @@ public class MultiRecipeCrafter extends Block {
 
             @Override
             public void trigger(Building build) {
-                if (build instanceof DynamicCraferBuild crafter && crafter.getCurRecipe() != null) {
+                if (build instanceof MultiRecipeCrafterBuild crafter && crafter.getCurRecipe() != null) {
                     for (Consume consume : crafter.getCurRecipe().consumers) {
                         consume.trigger(crafter);
                     }
@@ -121,7 +114,7 @@ public class MultiRecipeCrafter extends Block {
 
             @Override
             public float efficiency(Building build) {
-                if (build instanceof DynamicCraferBuild crafter && crafter.getCurRecipe() != null) {
+                if (build instanceof MultiRecipeCrafterBuild crafter && crafter.getCurRecipe() != null) {
                     float minEfficiency = 1f;
 
                     for (Consume consume : crafter.getCurRecipe().consumers) {
@@ -140,7 +133,7 @@ public class MultiRecipeCrafter extends Block {
 
                 table.table(cont -> {
                     table.update(() -> {
-                        if (build instanceof DynamicCraferBuild crafter) {
+                        if (build instanceof MultiRecipeCrafterBuild crafter) {
                             RecipeIO recipe = crafter.getCurRecipe();
                             if (current[0] != recipe) {
                                 current[0] = recipe;
@@ -163,6 +156,20 @@ public class MultiRecipeCrafter extends Block {
                 }
             }
         });
+
+        if (hasPower) {
+            consume(new ConsumePowerDynamic(build ->
+                    ((MultiRecipeCrafterBuild) build).getCurRecipe() == null ? 0f : ((MultiRecipeCrafterBuild) build).getCurRecipe().powerUse) {
+                @Override
+                public float efficiency(Building build) {
+                    MultiRecipeCrafterBuild multiCrafterBuild = (MultiRecipeCrafterBuild) build;
+                    if (multiCrafterBuild.getCurRecipe() == null || multiCrafterBuild.getCurRecipe().powerUse <= 0f) {
+                        return 1f;
+                    }
+                    return super.efficiency(build);
+                }
+            });
+        }
 
         super.init();
     }
@@ -206,8 +213,9 @@ public class MultiRecipeCrafter extends Block {
         }
     }
 
-    public class DynamicCraferBuild extends Building{
-        public int recipeIDX = -1;
+
+    public class MultiRecipeCrafterBuild extends Building{
+        public int recipeIDX;
         public float progress = 0;
         public float totalProgress = 0;
         public float warmup = 0;
@@ -410,7 +418,12 @@ public class MultiRecipeCrafter extends Block {
                                             new Table(td -> {
                                                 td.table(input -> addRecipeResources(input, recipe))
                                                         .left().grow().pad(10f);
-
+                                                if(recipe.powerUse != 0){
+                                                    td.table(pwrUse ->{
+                                                        pwrUse.image(Icon.power).color(Pal.accent);
+                                                        pwrUse.add(recipe.powerUse + "/s");
+                                                    });
+                                                }
                                                 td.table(arrow -> {
                                                     arrow.image(Icon.right).color(Pal.darkishGray).size(20f);
                                                 }).pad(10f);

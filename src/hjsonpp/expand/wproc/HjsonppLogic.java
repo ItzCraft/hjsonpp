@@ -13,5 +13,8 @@ public class HjsonppLogic {
 
         LAssembler.customParsers.put("textdialog", TextDialog::new);
         LogicIO.allStatements.addUnique(TextDialog::new);
+
+        LAssembler.customParsers.put("unlockcontent", ContentUnlockerStatement::new);
+        LogicIO.allStatements.addUnique(ContentUnlockerStatement::new);
     }
 }

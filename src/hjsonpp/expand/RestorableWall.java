@@ -10,6 +10,8 @@ public class RestorableWall extends Wall{
     // how much heal does wall recieve
     public float healPercent = 7f;
 
+    public float healAmount = Float.NEGATIVE_INFINITY;
+
     public RestorableWall(String name){
         super(name);
     }
@@ -22,17 +24,17 @@ public class RestorableWall extends Wall{
 
     public class RestorableWallBuild extends WallBuild {
         public float charge = 0;
-        boolean canHeal = true;
 
         @Override
         public void updateTile(){
-            canHeal = true;
             charge += Time.delta;
-            if(charge >= healReload && canHeal && health() < maxHealth()) {
+            if(charge >= healReload && health() < maxHealth() && canConsume()) {
                 charge = 0f;
-                if(health() >= maxHealth()) canHeal = false;
-
-                heal((maxHealth() / 5) * (healPercent) / 100f);
+                if(healAmount == Float.NEGATIVE_INFINITY) {
+                    heal(maxHealth() / 100 * healPercent);
+                } else  {
+                    heal(healAmount);
+                }
                 recentlyHealed();
             }
         }

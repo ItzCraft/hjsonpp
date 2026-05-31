@@ -9,6 +9,5 @@ public class AdditionalStats{
             produceChance = new Stat("produce-chance", StatCat.crafting),
             reloadFrom = new Stat("reload-from", StatCat.function),
             reloadTo = new Stat("reload-from", StatCat.function),
-            recipe = new Stat("mc-recipe", StatCat.function);
-
+            recipe = new Stat("mc-recipe", StatCat.crafting);
 }

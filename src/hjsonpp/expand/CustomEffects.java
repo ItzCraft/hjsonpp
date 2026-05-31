@@ -13,7 +13,7 @@ public class CustomEffects{
         Color dropColor = Color.valueOf("db96eb").cpy().a(0.7f * life);
 
         Draw.color(dropColor);
-        Fill.circle(e.x, e.y, 1f * (1f - e.fin()));
+        Fill.circle(e.x, e.y, (1f - e.fin()));
         Draw.reset();
     }),
     purpleOrbital = new Effect(60f, e -> {
@@ -24,7 +24,7 @@ public class CustomEffects{
         float speed = -900f;
         int times = 13;
         for (int i = 0; i < particles; i++) {
-            float phaseOffset = Mathf.randomSeed(e.id * 17 + i * 43) * 360f;
+            float phaseOffset = Mathf.randomSeed(e.id * 17L + i * 43) * 360f;
             float angle = t * speed + phaseOffset;
             float rad = angle * Mathf.degreesToRadians;
             float interpRadius = baseRadius * (1f + Mathf.absin(t * 5f, 0.1f));

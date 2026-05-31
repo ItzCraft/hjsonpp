@@ -1,11 +1,11 @@
 package hjsonpp;
 
 import hjsonpp.expand.ChanceCrafter;
+import hjsonpp.expand.MultiRecipeCrafter;
 import hjsonpp.expand.wproc.*;
 import mindustry.mod.*;
 
 public class HjsonPlusPlusMod extends Mod{
-
     public HjsonPlusPlusMod(){
         ClassMap.classes.put("AdvancedConsumeGenerator", hjsonpp.expand.AdvancedConsumeGenerator.class);
         ClassMap.classes.put("AdvancedHeaterGenerator", hjsonpp.expand.AdvancedHeaterGenerator.class);
@@ -24,6 +24,7 @@ public class HjsonPlusPlusMod extends Mod{
         ClassMap.classes.put("CustomEffects", hjsonpp.expand.CustomEffects.class);
         ClassMap.classes.put("BlackHoleBulletType", hjsonpp.expand.BlackHoleBulletType.class);
         ClassMap.classes.put("ModeTurret", hjsonpp.expand.ModeTurret.class);
+        ClassMap.classes.put("MultiRecipeCrafter", hjsonpp.expand.MultiRecipeCrafter.class);
     }
 
     @Override
