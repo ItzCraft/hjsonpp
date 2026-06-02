@@ -1,11 +1,23 @@
 package hjsonpp;
 
+import arc.Core;
+import arc.Events;
+import arc.struct.Seq;
+import arc.util.Log;
 import hjsonpp.expand.ChanceCrafter;
 import hjsonpp.expand.MultiRecipeCrafter;
 import hjsonpp.expand.wproc.*;
+import mindustry.Vars;
+import mindustry.game.EventType;
 import mindustry.mod.*;
 
+import static mindustry.Vars.mods;
+import static mindustry.Vars.ui;
+
 public class HjsonPlusPlusMod extends Mod{
+
+    String[] modTurnOffBlacklist = {"azimut", "enceladus", "mov"};
+
     public HjsonPlusPlusMod(){
         ClassMap.classes.put("AdvancedConsumeGenerator", hjsonpp.expand.AdvancedConsumeGenerator.class);
         ClassMap.classes.put("AdvancedHeaterGenerator", hjsonpp.expand.AdvancedHeaterGenerator.class);
@@ -36,5 +48,23 @@ public class HjsonPlusPlusMod extends Mod{
     @Override
     public void loadContent(){
         HjsonppLogic.init();
+        Events.on(EventType.ClientLoadEvent.class, e->{
+            boolean r = false;
+            Seq<String> modNames = new Seq<>();
+            for(String n : modTurnOffBlacklist){
+                Mods.LoadedMod m  = mods.getMod(n);
+                if(m != null && m.enabled()) {
+                    r = true;
+                    Log.info("Idi nahuy: " + m.name);
+                    modNames.add(m.name + ";");
+                    mods.setEnabled(m, false);
+                }
+            }
+            if(r){
+                ui.showOkText("Lol","All blacklist mods are disabled\n"+ modNames, ()->{
+                    Core.app.exit();
+                });
+            }
+        });
     }
 }
