@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -15,6 +16,7 @@ import mindustry.entities.Effect;
 import mindustry.entities.Mover;
 import mindustry.entities.Sized;
 import mindustry.entities.bullet.BulletType;
+import mindustry.entities.pattern.ShootPattern;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.ui.Bar;
@@ -26,7 +28,7 @@ import static mindustry.Vars.player;
 //Extendable class for ItemTurret with different fire modes.
 public class ModeTurret extends ItemTurret{
 
-    public TurretMode defaultMode = new TurretMode("default",1, 1,1);
+    public TurretMode defaultMode = new TurretMode("default", 1, 1, 1);
 
     //Can be null. In constructor, it's just adding DefaultMode
 
@@ -60,7 +62,8 @@ public class ModeTurret extends ItemTurret{
         });
     }
 
-    public class TurretMode{
+    public static class TurretMode{
+        @Nullable
         public String name;
         public Color barColor = Color.white;
         public float accuracyMultiplier = 1;
@@ -68,6 +71,8 @@ public class ModeTurret extends ItemTurret{
         public float rotateSpeedMultiplier = 1;
         public float rangeChange = 0;
         public float targetIntervalMultiplier = 1;
+        @Nullable
+        public ShootPattern modePattern;
 
         public TurretMode(String name, float accuracyM, float reloadM, float rotateSpdM){
             this.name = name;
@@ -288,6 +293,43 @@ public class ModeTurret extends ItemTurret{
             totalShots++;
 
             if(!consumeAmmoOnce){
+                useAmmo();
+            }
+        }
+
+        @Override
+        protected void shoot(BulletType type){
+            float
+                    bulletX = x + Angles.trnsx(rotation - 90, shootX, shootY),
+                    bulletY = y + Angles.trnsy(rotation - 90, shootX, shootY);
+
+            if(shoot.firstShotDelay > 0){
+                chargeSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax));
+                type.chargeEffect.at(bulletX, bulletY, rotation);
+            }
+
+            TurretMode mode = getMode();
+
+            ShootPattern pattern = mode.modePattern != null ? mode.modePattern : shoot;
+
+            pattern.shoot(barrelCounter, (xOffset, yOffset, angle, delay, mover) -> {
+                queuedBullets++;
+                int barrel = barrelCounter;
+
+                if(delay > 0f){
+                    Time.run(delay, () -> {
+                        //hack: make sure the barrel is the same as what it was when the bullet was queued to fire
+                        int prev = barrelCounter;
+                        barrelCounter = barrel;
+                        bullet(type, xOffset, yOffset, angle, mover);
+                        barrelCounter = prev;
+                    });
+                }else{
+                    bullet(type, xOffset, yOffset, angle, mover);
+                }
+            }, () -> barrelCounter++);
+
+            if(consumeAmmoOnce){
                 useAmmo();
             }
         }
