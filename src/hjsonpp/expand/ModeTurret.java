@@ -97,7 +97,6 @@ public class ModeTurret extends ItemTurret{
         @Nullable
         public ShootPattern modePattern;
         public TextureRegion icon;
-
         public void load(){
             icon = Core.atlas.find(path+"turret-mode-" + this.name);
         }
