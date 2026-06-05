@@ -66,7 +66,7 @@ public class ModeTurret extends ItemTurret{
     @Override
     public void load(){
         super.load();
-        defaultIcon = Core.atlas.find("vnrwk-turret-mode-default");
+        defaultIcon = Core.atlas.find("hjsonpp-turret-mode-default");
         for(TurretMode t : turModes){
             t.load();
         }
@@ -85,6 +85,8 @@ public class ModeTurret extends ItemTurret{
     }
 
     public static class TurretMode{
+        //"modname"
+        public String path = "hjsonpp";
         public String name = "";
         public Color barColor = Color.white;
         public float accuracyMultiplier = 1;
@@ -97,7 +99,7 @@ public class ModeTurret extends ItemTurret{
         public TextureRegion icon;
 
         public void load(){
-            icon = Core.atlas.find("vnrwk-turret-mode-" + this.name);
+            icon = Core.atlas.find(path+"turret-mode-" + this.name);
         }
 
         public TextureRegion icon(){
