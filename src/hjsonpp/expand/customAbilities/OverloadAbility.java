@@ -23,7 +23,7 @@ public class OverloadAbility extends Ability {
     public float duration = 60, reload = 100;
     public StatusEffect applyStatus = StatusEffects.fast;
     public boolean onShoot = false;
-    public Effect activeEffect = Fx.overdriveWave;
+    public Effect activeEffect = Fx.bigShockwave;
     public float x, y = 0;
     public boolean parentizeEffects = true;
     public Color color = Color.valueOf("e0ecff");
@@ -82,7 +82,7 @@ public class OverloadAbility extends Ability {
             overloading = true;
             unit.apply(applyStatus, duration);
 
-            float ex = unit.x + Angles.trnsx(unit.rotation, this.x, this.y), ey = unit.y + Angles.trnsy(unit.rotation, this.x, this.y);
+            float ex = unit.x + Angles.trnsx(unit.rotation, this.y, this.x), ey = unit.y + Angles.trnsy(unit.rotation, this.y, this.x);
             activeEffect.at(ex, ey, unit.rotation, color, parentizeEffects ? unit : null);
 
             timer = 0f;
