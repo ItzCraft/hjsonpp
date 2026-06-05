@@ -3,8 +3,13 @@ package hjsonpp.expand;
 import arc.Core;
 import arc.Graphics;
 import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.scene.style.Drawable;
+import arc.scene.style.TextureRegionDrawable;
+import arc.scene.ui.ImageButton;
+import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Nullable;
 import arc.util.Time;
@@ -19,16 +24,24 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.entities.pattern.ShootPattern;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
+import mindustry.gen.Tex;
+import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
+import mindustry.ui.Styles;
+import mindustry.world.Block;
+import mindustry.world.blocks.ItemSelection;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+
+import java.util.Objects;
 
 import static mindustry.Vars.fogControl;
 import static mindustry.Vars.player;
 
 //Extendable class for ItemTurret with different fire modes.
 public class ModeTurret extends ItemTurret{
+    public static TextureRegion defaultIcon;
 
-    public TurretMode defaultMode = new TurretMode("default", 1, 1, 1);
+    public TurretMode defaultMode = new TurretMode("default");
 
     //Can be null. In constructor, it's just adding DefaultMode
 
@@ -50,21 +63,29 @@ public class ModeTurret extends ItemTurret{
         );
     }
 
+    @Override
+    public void load(){
+        super.load();
+        defaultIcon = Core.atlas.find("vnrwk-turret-mode-default");
+        for(TurretMode t : turModes){
+            t.load();
+        }
+    }
+
     public ModeTurret(String name) {
         super(name);
         turModes.insert(0, defaultMode);
         sync = true;
         saveConfig = true;
         copyConfig = true;
-
+        configurable = true;
         config(Integer.class, (ModeTurretBuild e, Integer idx) -> {
             e.currentTurretMode = idx;
         });
     }
 
     public static class TurretMode{
-        @Nullable
-        public String name;
+        public String name = "";
         public Color barColor = Color.white;
         public float accuracyMultiplier = 1;
         public float reloadMultiplier = 1;
@@ -73,6 +94,19 @@ public class ModeTurret extends ItemTurret{
         public float targetIntervalMultiplier = 1;
         @Nullable
         public ShootPattern modePattern;
+        public TextureRegion icon;
+
+        public void load(){
+            icon = Core.atlas.find("vnrwk-turret-mode-" + this.name);
+        }
+
+        public TextureRegion icon(){
+            return Objects.equals(this.name, "default") ? defaultIcon : !icon.found() ? defaultIcon  : icon;
+        }
+
+        public TurretMode(String name){
+            this.name = name;
+        }
 
         public TurretMode(String name, float accuracyM, float reloadM, float rotateSpdM){
             this.name = name;
@@ -335,17 +369,24 @@ public class ModeTurret extends ItemTurret{
         }
 
         @Override
-        public Graphics.Cursor getCursor(){
-            return interactable(player.team()) ? Graphics.Cursor.SystemCursor.hand : Graphics.Cursor.SystemCursor.arrow;
-        }
-
-
-        @Override
-        public void tapped(){
-            super.tapped();
-            Fx.placeBlock.at(this, size);
-            Sounds.click.at(this);
-            configure((currentTurretMode + 1) % turModes.size);
+        public void buildConfiguration(Table table){
+            table.background(Styles.black6);
+            table.image(Tex.whiteui, Pal.gray).height(4f).growX().row();
+            table.table(buttons ->{
+                for(int i = 0; i < turModes.size; i++){
+                    TurretMode tm = turModes.get(i);
+                    int bid = i;
+                    boolean isCurrent = currentTurretMode == i;
+                    if(i % 5 == 0) table.row();
+                    table.button(b ->{
+                        b.center();
+                        b.image(tm.icon());
+                        b.update(() -> b.setChecked(isCurrent));
+                    }, Styles.clearNoneTogglei, ()->{
+                        configure(bid);
+                        deselect();
+                    }).growX().size(40).tooltip(Core.bundle.format("fire.turret.mode.") + tm.name);
+                }}).grow();
         }
 
         @Override

@@ -5,9 +5,8 @@ import arc.Events;
 import arc.struct.Seq;
 import arc.util.Log;
 import hjsonpp.expand.ChanceCrafter;
-import hjsonpp.expand.MultiRecipeCrafter;
+import hjsonpp.expand.customAbilities.OverloadAbility;
 import hjsonpp.expand.wproc.*;
-import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.mod.*;
 
@@ -37,6 +36,7 @@ public class HjsonPlusPlusMod extends Mod{
         ClassMap.classes.put("BlackHoleBulletType", hjsonpp.expand.BlackHoleBulletType.class);
         ClassMap.classes.put("ModeTurret", hjsonpp.expand.ModeTurret.class);
         ClassMap.classes.put("MultiRecipeCrafter", hjsonpp.expand.MultiRecipeCrafter.class);
+        ClassMap.classes.put("OverloadAbility", OverloadAbility.class);
     }
 
     @Override
