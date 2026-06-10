@@ -1,14 +1,10 @@
 package hjsonpp.expand;
 
 import arc.Core;
-import arc.Graphics;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.scene.style.Drawable;
-import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.ImageButton;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Nullable;
@@ -16,7 +12,6 @@ import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Mover;
 import mindustry.entities.Sized;
@@ -28,14 +23,11 @@ import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
-import mindustry.world.Block;
-import mindustry.world.blocks.ItemSelection;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 
 import java.util.Objects;
 
 import static mindustry.Vars.fogControl;
-import static mindustry.Vars.player;
 
 //Extendable class for ItemTurret with different fire modes.
 public class ModeTurret extends ItemTurret{
@@ -44,11 +36,10 @@ public class ModeTurret extends ItemTurret{
     public TurretMode defaultMode = new TurretMode("default");
 
     //Can be null. In constructor, it's just adding DefaultMode
-
-    public Seq<TurretMode> turModes = new Seq<>();
+    public Seq<TurretMode> turretModes = new Seq<>();
 
     public void addModes(TurretMode...tmodes){
-        turModes.add(tmodes);
+        turretModes.add(tmodes);
     }
 
     @Override
@@ -67,14 +58,19 @@ public class ModeTurret extends ItemTurret{
     public void load(){
         super.load();
         defaultIcon = Core.atlas.find("hjsonpp-turret-mode-default");
-        for(TurretMode t : turModes){
+        for(TurretMode t : turretModes){
             t.load();
         }
     }
 
+    @Override
+    public void init(){
+        super.init();
+        turretModes.insert(0, defaultMode);
+    }
+
     public ModeTurret(String name) {
         super(name);
-        turModes.insert(0, defaultMode);
         sync = true;
         saveConfig = true;
         copyConfig = true;
@@ -94,6 +90,7 @@ public class ModeTurret extends ItemTurret{
         public float rotateSpeedMultiplier = 1;
         public float rangeChange = 0;
         public float targetIntervalMultiplier = 1;
+
         @Nullable
         public ShootPattern modePattern;
         public TextureRegion icon;
@@ -104,6 +101,7 @@ public class ModeTurret extends ItemTurret{
         public TextureRegion icon(){
             return Objects.equals(this.name, "default") ? defaultIcon : !icon.found() ? defaultIcon  : icon;
         }
+        public TurretMode() {}
 
         public TurretMode(String name){
             this.name = name;
@@ -130,7 +128,7 @@ public class ModeTurret extends ItemTurret{
         public int currentTurretMode;
 
         public TurretMode getMode(){
-            return turModes.get(currentTurretMode);
+            return turretModes.get(currentTurretMode);
         }
 
         float lastRangeChange;
@@ -374,8 +372,8 @@ public class ModeTurret extends ItemTurret{
             table.background(Styles.black6);
             table.image(Tex.whiteui, Pal.gray).height(4f).growX().row();
             table.table(buttons ->{
-                for(int i = 0; i < turModes.size; i++){
-                    TurretMode tm = turModes.get(i);
+                for(int i = 0; i < turretModes.size; i++){
+                    TurretMode tm = turretModes.get(i);
                     int bid = i;
                     boolean isCurrent = currentTurretMode == i;
                     if(i % 5 == 0) table.row();
@@ -386,7 +384,7 @@ public class ModeTurret extends ItemTurret{
                     }, Styles.clearNoneTogglei, ()->{
                         configure(bid);
                         deselect();
-                    }).growX().size(40).tooltip(Core.bundle.format("fire.turret.mode.") + tm.name);
+                    }).growX().size(40).tooltip(Core.bundle.format("fire.turret.mode."  + tm.name));
                 }}).grow();
         }
 
