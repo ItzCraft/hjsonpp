@@ -5,6 +5,6 @@ author: "ItzCraft & Sputnuc
 Contributors: Photon_gravity"
 main: "hjsonpp.HjsonPlusPlusMod"
 description: "Adds some new additional classes to help hjson modders. \nNote: this a library. Not playable mod."
-version: 1.2
+version: 1.21
 subtitle: goodluck with modding!
 minGameVersion: 157
